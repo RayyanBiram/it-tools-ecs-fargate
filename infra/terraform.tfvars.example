@@ -1,0 +1,29 @@
+# Copy this file to terraform.tfvars and fill in real values.
+# terraform.tfvars is gitignored - this file documents the expected shape only.
+
+# --- Variables ---
+aws_region = "eu-west-2"                         # region all resources hosted in
+domain_name = "tools.biram.uk"                   # domain where the app lives
+availability_zone = ["eu-west-2a", "eu-west-2b"] # availability zones where resources are equally distributed
+
+# --- VPC cidr blocks ---
+vpc_cidr = "10.0.0.0/16"                             
+public_subnet_cidr = ["10.0.0.0/24", "10.0.1.0/24"]
+private_subnet_cidr = ["10.0.2.0/24", "10.0.3.0/24"]
+route_cidr = "0.0.0.0/0"
+
+
+# --- Security group ports ---
+alb_ingress_port = [80, 443]   # ports the ALB listens on publicly
+protocol         = "tcp"       # transport protocol for SG rules
+cidr_ipv4        = "0.0.0.0/0" # CIDR allowed to reach the ALB
+
+# --- Container / target group ---
+container_port        = 8080   # port the app container listens on
+tasks_egress_port     = 443    # port ECS tasks use to reach VPC endpoints
+fargate_ingress_port  = 443    # port VPC endpoints accept from ECS tasks
+target_group_protocol = "HTTP" # protocol between ALB and target group
+
+# --- ECR ---
+repository_name = "it-tools-ecs-fargate" # name of the existing ECR repository
+image_tag       = "c67d9d3"              # tag of the default image
