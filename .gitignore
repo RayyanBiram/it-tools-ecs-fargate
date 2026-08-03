@@ -1,0 +1,23 @@
+.env
+.DS_Store
+
+# Local .terraform directories
+**/.terraform/*
+.terraform/
+
+# EXclude .tfstate files - contain sensitive data
+*.tfstate
+*.tfstate.*
+
+# Exclude .tfvars files - contain sensitive data
+*.tfvars
+
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.backup
