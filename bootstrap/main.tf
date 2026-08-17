@@ -140,6 +140,27 @@ resource "aws_iam_role_policy" "s3" {
   })
 }
 
+resource "aws_iam_role_policy" "appautoscaling" {
+  name = "appautoscaling-policy"
+  role = aws_iam_role.infra.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid    = "AppAutoScaling"
+      Effect = "Allow"
+      Action = [
+        "application-autoscaling:RegisterScalableTarget",
+        "application-autoscaling:DeregisterScalableTarget",
+        "application-autoscaling:PutScalingPolicy",
+        "application-autoscaling:DeleteScalingPolicy",
+        "application-autoscaling:DescribeScalableTargets",
+        "application-autoscaling:DescribeScalingPolicies"
+      ]
+      Resource = "*"
+    }]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "infra_vpc" {
   role       = aws_iam_role.infra.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
@@ -170,7 +191,3 @@ resource "aws_iam_role_policy_attachment" "infra_acm" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "infra_appautoscaling" {
-  role       = aws_iam_role.infra.name
-  policy_arn = "arn:aws:iam::aws:policy/aws-service-role/AWSApplicationAutoscalingECSServicePolicy"
-}
