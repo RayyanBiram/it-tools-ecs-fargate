@@ -73,7 +73,7 @@ jobs:
       - name: checkov scan
         uses: bridgecrewio/checkov-action@v12
         with:
-          file: tfplan.json
+          file: infra/tfplan.json
           quiet: true
           soft_fail: false
           output_format: sarif
