@@ -7,12 +7,17 @@ on:
       - 'app/**'
       - 'Dockerfile'
       - 'nginx.conf'
+
+  workflow_run:
+    workflows: ["terraform-deploy"]
+    types: [completed]    
+
   workflow_dispatch:
 
 jobs:
     build-and-push:
+      if: github.event_name == 'push' || github.event.workflow_run.conclusion == 'success'
       runs-on: ubuntu-latest
-
       environment:
         name: build-push
         
@@ -24,7 +29,8 @@ jobs:
       steps:
         - name: checkout code
           uses: actions/checkout@v4
-        
+          with:
+            ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
         - name: configure aws credentials
           uses: aws-actions/configure-aws-credentials@v6
