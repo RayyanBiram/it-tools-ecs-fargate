@@ -27,7 +27,7 @@ jobs:
     env:
       TF_VAR_alb_ingress_port: ${{ vars.ALB_INGRESS_PORT }}
       TF_VAR_protocol: ${{ vars.PROTOCOL }}
-      TF_VAR_alb_ingress_cidr_ipv4: ${{ vars.ALB_INGRESS_CIDR_IPV4 }}
+      TF_VAR_cidr_ipv4: ${{ vars.ALB_INGRESS_CIDR_IPV4 }}
       TF_VAR_container_port: ${{ vars.CONTAINER_PORT }}
       TF_VAR_tasks_egress_port: ${{ vars.TASKS_EGRESS_PORT }}
       TF_VAR_fargate_ingress_port: ${{ vars.FARGATE_INGRESS_PORT }}
