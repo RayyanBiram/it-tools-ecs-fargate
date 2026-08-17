@@ -25,7 +25,7 @@ jobs:
         working-directory: infra
 
     env:
-      TF_VAR_AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
       TF_VAR_alb_ingress_port: ${{ vars.ALB_INGRESS_PORT }}
       TF_VAR_protocol: ${{ vars.PROTOCOL }}
       TF_VAR_cidr_ipv4: ${{ vars.CIDR_IPV4 }}
