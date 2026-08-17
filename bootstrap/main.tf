@@ -169,3 +169,8 @@ resource "aws_iam_role_policy_attachment" "infra_acm" {
   role       = aws_iam_role.infra.name
   policy_arn = "arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess"
 }
+
+resource "aws_iam_role_policy_attachment" "infra_appautoscaling" {
+  role       = aws_iam_role.infra.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSApplicationAutoscalingFullAccess"
+}
