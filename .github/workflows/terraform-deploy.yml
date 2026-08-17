@@ -1,0 +1,87 @@
+name: automating terraform apply with security checks
+
+on:
+  push:
+    branches: [main]
+    paths: 
+      - 'infra/**'
+
+  workflow_dispatch:
+
+jobs:
+  terraform-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: infra
+
+    permissions:
+      id-token: write
+      contents: read
+      security-events: write
+    
+    defaults:
+      run:
+        working-directory: infra
+
+    env:
+      TF_VAR_alb_ingress_port: ${{ vars.ALB_INGRESS_PORT }}
+      TF_VAR_protocol: ${{ vars.PROTOCOL }}
+      TF_VAR_alb_ingress_cidr_ipv4: ${{ vars.ALB_INGRESS_CIDR_IPV4 }}
+      TF_VAR_container_port: ${{ vars.CONTAINER_PORT }}
+      TF_VAR_tasks_egress_port: ${{ vars.TASKS_EGRESS_PORT }}
+      TF_VAR_fargate_ingress_port: ${{ vars.FARGATE_INGRESS_PORT }}
+      TF_VAR_target_group_protocol: ${{ vars.TARGET_GROUP_PROTOCOL }}
+      TF_VAR_repository_name: ${{ vars.REPOSITORY_NAME }}
+      TF_VAR_image_tag: ${{ vars.IMAGE_TAG }}
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_INFRA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: terraform format
+        run: terraform fmt -check -recursive -diff
+
+      - name: terraform init
+        run: terraform init
+
+      - name: terraform validate
+        run: terraform validate
+
+      - name: terraform plan
+        run: terraform plan -out=tfplan
+
+      - name: terraform plan into json
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: checkov scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          file: tfplan.json
+          quiet: true
+          soft_fail: false
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+
+      - name: upload checkov results file
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: checkov-results.sarif
+      
+      - name: terraform apply
+        run: terraform apply -auto-approve tfplan
+      
+      - name: check https path
+        run: |
+          curl -f https://tools.biram.uk/health
+      
