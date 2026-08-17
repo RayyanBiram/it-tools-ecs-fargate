@@ -154,7 +154,10 @@ resource "aws_iam_role_policy" "appautoscaling" {
         "application-autoscaling:PutScalingPolicy",
         "application-autoscaling:DeleteScalingPolicy",
         "application-autoscaling:DescribeScalableTargets",
-        "application-autoscaling:DescribeScalingPolicies"
+        "application-autoscaling:DescribeScalingPolicies",
+        "application-autoscaling:ListTagsForResource",
+        "application-autoscaling:TagResource",
+        "application-autoscaling:UntagResource"
       ]
       Resource = "*"
     }]
