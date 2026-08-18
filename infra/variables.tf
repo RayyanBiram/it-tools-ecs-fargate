@@ -77,4 +77,3 @@ variable "image_tag" {
   description = "Tag of the image stored in ECR"
   type        = string
 }
-
