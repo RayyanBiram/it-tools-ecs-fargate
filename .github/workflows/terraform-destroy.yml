@@ -1,0 +1,73 @@
+name: automating terraform destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "destroy" to confirm'
+        required: true
+        type: string
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: infra
+
+    permissions:
+      id-token: write
+      contents: read
+    
+    defaults:
+      run:
+        working-directory: infra
+
+    env:
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_alb_ingress_port: ${{ vars.ALB_INGRESS_PORT }}
+      TF_VAR_protocol: ${{ vars.PROTOCOL }}
+      TF_VAR_cidr_ipv4: ${{ vars.CIDR_IPV4 }}
+      TF_VAR_container_port: ${{ vars.CONTAINER_PORT }}
+      TF_VAR_tasks_egress_port: ${{ vars.TASKS_EGRESS_PORT }}
+      TF_VAR_fargate_ingress_port: ${{ vars.FARGATE_INGRESS_PORT }}
+      TF_VAR_target_group_protocol: ${{ vars.TARGET_GROUP_PROTOCOL }}
+      TF_VAR_repository_name: ${{ vars.REPOSITORY_NAME }}
+      TF_VAR_image_tag: ${{ vars.IMAGE_TAG }}
+      TF_VAR_availability_zone: ${{ vars.AVAILABILITY_ZONE }}
+      TF_VAR_private_subnet_cidr: ${{ vars.PRIVATE_SUBNET_CIDR }}
+      TF_VAR_public_subnet_cidr: ${{ vars.PUBLIC_SUBNET_CIDR }}
+      TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
+      TF_VAR_route_cidr: ${{ vars.ROUTE_CIDR }}
+      TF_VAR_domain_name: ${{ vars.DOMAIN_NAME }}
+      
+    steps:
+      - name: verify confirmation
+        env:
+          CONFIRM_INPUT: ${{ github.event.inputs.confirm }}
+        run: |
+          if [ "$CONFIRM_INPUT" != "destroy" ]; then
+            echo "Confirmation string did not match. Aborting."
+            exit 1
+          fi
+
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_INFRA_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: terraform init
+        run: terraform init
+      
+      - name: terraform plan
+        run: terraform plan -destroy -out=tfplan
+
+      - name: terraform destroy
+        run: terraform apply -auto-approve tfplan
