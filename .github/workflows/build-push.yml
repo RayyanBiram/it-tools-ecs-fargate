@@ -97,6 +97,10 @@ jobs:
             cluster: ${{ vars.ECS_CLUSTER }}
             wait-for-service-stability: true
 
+        - name: wait for ecs service stability
+          run: |
+            aws ecs wait services-stable --cluster ${{ vars.ECS_CLUSTER }} --services ${{ vars.ECS_SERVICE }}
+
         - name: check https path
           run: |
             curl -f https://tools.biram.uk/health
