@@ -108,7 +108,8 @@ resource "aws_iam_role_policy" "iam" {
           "iam:ListRolePolicies",
           "iam:ListAttachedRolePolicies",
           "iam:AttachRolePolicy",
-          "iam:DetachRolePolicy"
+          "iam:DetachRolePolicy",
+          "iam:ListInstanceProfilesForRole"
         ],
         "Resource" : "arn:aws:iam::187949931624:role/ecs-task-execution-role"
     }]
