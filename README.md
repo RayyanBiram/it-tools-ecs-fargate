@@ -12,6 +12,22 @@ Production-grade deployment of the open-source **IT Tools** application on AWS E
 **Live at [https://tools.biram.uk](https://tools.biram.uk)**
  
 ---
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [The Big Four](#the-big-four)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [App Demo](#app-demo)
+- [CI/CD Pipelines](#cicd-pipelines)
+- [Design Decisions](#design-decisions)
+- [Security](#security)
+- [Known Limitations and Trade-Offs](#known-limitations-and-trade-offs)
+- [Local Setup](#local-setup)
+- [Reproducing the Deployment](#reproducing-the-deployment)
+- [Future Improvements](#future-improvements)
+
+---
  
 ## Project Overview
  
