@@ -18,6 +18,7 @@ Production-grade deployment of the open-source **IT Tools** application on AWS E
 - [The Big Four](#the-big-four)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
+- [Highlights](#highlights)
 - [App Demo](#app-demo)
 - [CI/CD Pipelines](#cicd-pipelines)
 - [Design Decisions](#design-decisions)
@@ -129,6 +130,34 @@ it-tools-ecs-fargate/
 ├── nginx.conf                        # SPA fallback + /health endpoint
 └── README.md
 ```
+
+ ---
+
+## Highlights
+
+- **Full environment rebuild in ~6 minutes.** A complete 40-resource teardown and
+  rebuild runs end to end from a single pipeline trigger, replacing hours of manual
+  console work.
+- **Teardown in ~3.5 minutes, behind a typed confirmation.** On-demand destruction
+  keeps a portfolio environment from accruing cost while idle, without risking an
+  accidental click.
+- **Zero static AWS credentials.** All three pipelines authenticate through GitHub
+  OIDC with short-lived tokens, removing key-rotation overhead and the risk of a
+  leaked long-lived key.
+- **~90% smaller container image.** Multi-stage builds ship a 99MB non-root runtime
+  instead of a 1GB+ image carrying Node and the full build toolchain, cutting ECR
+  storage and task pull times on every deployment.
+- **Vulnerable images never reach the registry.** Trivy gates the push step on
+  CRITICAL and HIGH findings, so a failed scan blocks publication rather than
+  reporting after the fact.
+- **90 security checks run on every infrastructure change.** Checkov scans the
+  Terraform plan and publishes SARIF to GitHub Security, with all 12 findings
+  reviewed and documented rather than suppressed.
+- **Zero-downtime releases across two Availability Zones.** Rolling deployments wait
+  for service stability and a live health check before a run is marked successful.
+- **No inbound path to the workload.** Tasks run in private subnets with no public
+  IP, reachable only from the ALB security group, and reach ECR and CloudWatch over
+  VPC endpoints rather than the public internet.
 
  ---
  
