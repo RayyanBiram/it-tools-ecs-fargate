@@ -41,6 +41,8 @@ jobs:
       TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
       TF_VAR_route_cidr: ${{ vars.ROUTE_CIDR }}
       TF_VAR_domain_name: ${{ vars.DOMAIN_NAME }}
+      TF_VAR_cpu_size: ${{ vars.CPU_SIZE }}
+      TF_VAR_memory_size: ${{ vars.MEMORY_SIZE }}
 
     steps:
       - name: checkout code
