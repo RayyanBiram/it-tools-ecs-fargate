@@ -73,6 +73,8 @@ module "ecs" {
   image_tag          = var.image_tag
   protocol           = var.protocol
   aws_region         = var.aws_region
+  cpu_size           = var.cpu_size
+  memory_size        = var.memory_size
 }
 
 data "aws_route53_zone" "ecs" {

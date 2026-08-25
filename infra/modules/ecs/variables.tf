@@ -42,3 +42,13 @@ variable "aws_region" {
   description = "Default AWS region used to create all resources"
   type        = string
 }
+
+variable "cpu_size" {
+  description = "CPUs allocated per task"
+  type        = number
+}
+
+variable "memory_size" {
+  description = "Memory allocated per task"
+  type        = number
+}

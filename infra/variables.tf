@@ -77,3 +77,13 @@ variable "image_tag" {
   description = "Tag of the image stored in ECR"
   type        = string
 }
+
+variable "cpu_size" {
+  description = "CPUs allocated per task"
+  type        = number
+}
+
+variable "memory_size" {
+  description = "Memory allocated per task"
+  type        = number
+}

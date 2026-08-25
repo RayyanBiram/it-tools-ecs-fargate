@@ -27,3 +27,7 @@ target_group_protocol = "HTTP" # protocol between ALB and target group
 # --- ECR ---
 repository_name = "it-tools-ecs-fargate" # name of the existing ECR repository
 image_tag       = "c67d9d3"              # tag of the default image
+
+# --- ECS ---
+cpu_size    = "256"            # amount of CPUs allocated per task
+memory_size = "512"            # amount of RAM 
